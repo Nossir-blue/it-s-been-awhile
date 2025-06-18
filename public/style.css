@@ -1,0 +1,10 @@
+*, *::before, *::after { box-sizing: border-box;}
+
+:root{
+    --text: #f5e2fc;
+    --background: #110215;
+    --primary: #d478f3;
+    --secondary: #8d0c6a;
+    --accent: #ef43a4;
+}
+
