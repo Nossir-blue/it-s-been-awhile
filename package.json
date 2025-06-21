@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node .\\price-comparison-backend\\server.js",
     "dev": "nodemon server.js",
     "docker:build": "docker build -t price-comparison-backend .",
     "docker:run": "docker run -p 3000:3000 price-comparison-backend",

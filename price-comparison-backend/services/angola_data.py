@@ -5,24 +5,24 @@ from data_api import ApiClient
 class AngolaDataService:
     def __init__(self):
         self.client = ApiClient()
-        self.angola_country_code = 'AGO'  # ISO 3166 alpha-3 para Angola
+        self.angola_country_code = 'AGO'  
     
     def get_economic_indicators(self):
         """Obter indicadores económicos de Angola"""
         try:
-            # PIB (GDP)
+            
             gdp_data = self.client.call_api('DataBank/indicator_data', query={
                 'indicator': 'NY.GDP.MKTP.CD',
                 'country': self.angola_country_code
             })
             
-            # Taxa de inflação
+            
             inflation_data = self.client.call_api('DataBank/indicator_data', query={
                 'indicator': 'FP.CPI.TOTL.ZG',
                 'country': self.angola_country_code
             })
             
-            # População
+            
             population_data = self.client.call_api('DataBank/indicator_data', query={
                 'indicator': 'SP.POP.TOTL',
                 'country': self.angola_country_code
@@ -43,7 +43,7 @@ class AngolaDataService:
             return None
         
         data = data_dict['data']
-        # Encontrar o ano mais recente com dados
+        
         for year in sorted(data.keys(), reverse=True):
             if data[year] is not None:
                 return {
@@ -52,7 +52,7 @@ class AngolaDataService:
                 }
         return None
 
-# Função para usar no backend Node.js
+
 def get_angola_context():
     """Função principal para obter contexto de Angola"""
     service = AngolaDataService()
@@ -63,7 +63,7 @@ def get_angola_context():
     
     context = {}
     
-    # Processar PIB
+    
     if indicators['gdp']:
         gdp_latest = service.get_latest_year_data(indicators['gdp'])
         if gdp_latest:
@@ -73,7 +73,7 @@ def get_angola_context():
                 'formatted': f"${gdp_latest['value']:,.0f} USD ({gdp_latest['year']})"
             }
     
-    # Processar inflação
+    
     if indicators['inflation']:
         inflation_latest = service.get_latest_year_data(indicators['inflation'])
         if inflation_latest:
@@ -83,7 +83,7 @@ def get_angola_context():
                 'formatted': f"{inflation_latest['value']:.2f}% ({inflation_latest['year']})"
             }
     
-    # Processar população
+    
     if indicators['population']:
         pop_latest = service.get_latest_year_data(indicators['population'])
         if pop_latest:
@@ -96,7 +96,7 @@ def get_angola_context():
     return context
 
 if __name__ == "__main__":
-    # Teste da função
+    
     context = get_angola_context()
     if context:
         print("Contexto de Angola:")
