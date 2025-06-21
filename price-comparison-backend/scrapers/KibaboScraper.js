@@ -18,10 +18,10 @@ class KibaboScraper {
       const page = await browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
       
-      // Navegar para a página inicial
+      
       await page.goto(this.baseUrl, { waitUntil: 'networkidle2' });
 
-      // Aceitar cookies se necessário
+      
       try {
         await page.waitForSelector('span:contains("ACEITAR TODOS OS COOKIES")', { timeout: 3000 });
         await page.click('span:contains("ACEITAR TODOS OS COOKIES")');
@@ -29,12 +29,12 @@ class KibaboScraper {
         console.log('Botão de cookies não encontrado ou já aceito');
       }
 
-      // Buscar pelo termo
+      
       await page.waitForSelector('input[placeholder="O que procura?"]');
       await page.type('input[placeholder="O que procura?"]', searchTerm);
       await page.keyboard.press('Enter');
 
-      // Aguardar resultados
+      
       await page.waitForSelector('.product-item, .produto', { timeout: 10000 });
 
       const content = await page.content();
@@ -42,7 +42,7 @@ class KibaboScraper {
 
       const products = [];
 
-      // Extrair produtos da página de resultados
+      
       $('.product-item, .produto, [class*="product"]').each((index, element) => {
         const $element = $(element);
         
@@ -52,7 +52,7 @@ class KibaboScraper {
         const imageUrl = $element.find('img').attr('src');
         const productUrl = $element.find('a').attr('href');
 
-        // Extrair preço numérico
+        
         const priceMatch = priceText.match(/[\d.,]+/);
         const price = priceMatch ? parseFloat(priceMatch[0].replace(',', '.')) : null;
 

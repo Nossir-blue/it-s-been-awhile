@@ -18,15 +18,15 @@ class MeumerkadoScraper {
       const page = await browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
       
-      // Navegar para a página inicial
+      
       await page.goto(this.baseUrl, { waitUntil: 'networkidle2' });
 
-      // Buscar pelo termo
+      
       await page.waitForSelector('input[title="Procurar produtos"]');
       await page.type('input[title="Procurar produtos"]', searchTerm);
       await page.keyboard.press('Enter');
 
-      // Aguardar resultados
+      
       await page.waitForSelector('.product-item, .ty-grid-list__item', { timeout: 10000 });
 
       const content = await page.content();
@@ -34,7 +34,7 @@ class MeumerkadoScraper {
 
       const products = [];
 
-      // Extrair produtos da página de resultados
+      
       $('.product-item, .ty-grid-list__item, [class*="product"]').each((index, element) => {
         const $element = $(element);
         
@@ -46,7 +46,7 @@ class MeumerkadoScraper {
         const imageUrl = $element.find('img').attr('src');
         const productUrl = $element.find('a').attr('href');
 
-        // Extrair preço numérico (formato AOA)
+        
         const priceMatch = priceText.match(/[\d.,]+/);
         const price = priceMatch ? parseFloat(priceMatch[0].replace(',', '.')) : null;
 

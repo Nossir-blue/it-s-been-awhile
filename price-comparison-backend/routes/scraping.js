@@ -4,7 +4,7 @@ const ScrapingManager = require('../scrapers/ScrapingManager');
 
 const scrapingManager = new ScrapingManager();
 
-// Executar scraping manual
+
 router.post('/run', async (req, res) => {
   try {
     console.log('Scraping manual iniciado via API');
@@ -25,7 +25,7 @@ router.post('/run', async (req, res) => {
   }
 });
 
-// Status do scraping
+
 router.get('/status', (req, res) => {
   res.json({
     status: 'active',

@@ -40,7 +40,7 @@ class ScrapingManager {
           const products = await scraper.scrapeProducts(term);
           allProducts.push(...products);
           
-          // Pausa entre requisições para evitar sobrecarga
+          
           await this.delay(2000);
         } catch (error) {
           console.error(`Erro ao fazer scraping de "${term}" em ${scraper.storeName}:`, error);
@@ -59,33 +59,33 @@ class ScrapingManager {
 
     for (const productData of products) {
       try {
-        // Verificar se o produto já existe
+        
         const existingProduct = await Product.findOne({
           name: productData.name,
           store: productData.store
         });
 
         if (existingProduct) {
-          // Atualizar produto existente
+          
           if (existingProduct.price !== productData.price) {
-            // Adicionar ao histórico de preços
+            
             existingProduct.priceHistory.push({
               price: existingProduct.price,
               date: existingProduct.lastUpdated
             });
             
-            // Manter apenas os últimos 30 registros de histórico
+            
             if (existingProduct.priceHistory.length > 30) {
               existingProduct.priceHistory = existingProduct.priceHistory.slice(-30);
             }
           }
 
-          // Atualizar campos
+          
           Object.assign(existingProduct, productData);
           await existingProduct.save();
           updatedCount++;
         } else {
-          // Criar novo produto
+          
           const newProduct = new Product(productData);
           await newProduct.save();
           savedCount++;

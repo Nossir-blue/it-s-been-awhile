@@ -1,7 +1,7 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
-// Função para executar script Python e obter dados de Angola
+
 const getAngolaData = () => {
   return new Promise((resolve, reject) => {
     const pythonScript = path.join(__dirname, '../services/angola_data.py');
@@ -21,8 +21,6 @@ const getAngolaData = () => {
     python.on('close', (code) => {
       if (code === 0) {
         try {
-          // Se o output contém dados estruturados, parse JSON
-          // Caso contrário, retorna dados mock
           resolve(getMockAngolaData());
         } catch (error) {
           resolve(getMockAngolaData());
@@ -35,7 +33,7 @@ const getAngolaData = () => {
   });
 };
 
-// Dados mock para Angola (caso a API não esteja disponível)
+
 const getMockAngolaData = () => {
   return {
     country: 'Angola',
@@ -64,7 +62,6 @@ const getMockAngolaData = () => {
   };
 };
 
-// Endpoint para obter dados contextuais de Angola
 const getAngolaContext = async (req, res) => {
   try {
     const angolaData = await getAngolaData();
@@ -85,12 +82,12 @@ const getAngolaContext = async (req, res) => {
   }
 };
 
-// Endpoint para obter insights sobre o mercado angolano
+
 const getMarketInsights = async (req, res) => {
   try {
     const angolaData = await getAngolaData();
     
-    // Calcular insights baseados nos dados
+    
     const insights = {
       priceContext: {
         inflationImpact: angolaData.inflation.value > 10 ? 'Alto' : 'Moderado',

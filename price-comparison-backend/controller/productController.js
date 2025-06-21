@@ -4,7 +4,6 @@ const SearchOptimizer = require('../services/SearchOptimizer');
 
 const searchOptimizer = new SearchOptimizer();
 
-// Função auxiliar para cache
 const getCachedData = async (key) => {
   try {
     const cached = await Cache.findOne({ key, expiresAt: { $gt: new Date() } });
@@ -28,7 +27,6 @@ const setCachedData = async (key, data, ttlMinutes = 30) => {
   }
 };
 
-// Buscar produtos por nome
 const searchProducts = async (req, res) => {
   try {
     const { q, store, category, sortBy = 'price', order = 'asc', page = 1, limit = 20, priceMin, priceMax } = req.query;
@@ -44,7 +42,6 @@ const searchProducts = async (req, res) => {
       return res.json(cachedResult);
     }
 
-    // Usar busca otimizada
     const filters = {
       store,
       category,
@@ -56,7 +53,6 @@ const searchProducts = async (req, res) => {
 
     const optimizedResults = await searchOptimizer.optimizedSearch(q, filters);
     
-    // Converter para formato esperado pelo frontend
     const products = optimizedResults.flatMap(group => 
       group.products.map(product => ({
         ...product,
@@ -76,7 +72,6 @@ const searchProducts = async (req, res) => {
       optimizedResults: optimizedResults.slice(0, 10) // Top 10 grupos
     };
 
-    // Cache por 15 minutos
     await setCachedData(cacheKey, result, 15);
 
     res.json(result);
@@ -86,7 +81,6 @@ const searchProducts = async (req, res) => {
   }
 };
 
-// Comparar preços de um produto específico
 const compareProductPrices = async (req, res) => {
   try {
     const { productName } = req.params;
@@ -98,14 +92,12 @@ const compareProductPrices = async (req, res) => {
       return res.json(cachedResult);
     }
 
-    // Usar comparação otimizada
     const comparison = await searchOptimizer.compareProductPrices(productName);
 
     if (comparison.storeComparison.length === 0) {
       return res.status(404).json({ error: 'Produto não encontrado' });
     }
 
-    // Formatar resultado para compatibilidade com frontend
     const allStores = comparison.storeComparison.map(store => ({
       store: store._id,
       price: store.minPrice,
@@ -124,7 +116,6 @@ const compareProductPrices = async (req, res) => {
       recommendations: comparison.recommendations
     };
 
-    // Cache por 30 minutos
     await setCachedData(cacheKey, result, 30);
 
     res.json(result);
@@ -134,7 +125,6 @@ const compareProductPrices = async (req, res) => {
   }
 };
 
-// Obter todas as lojas disponíveis
 const getStores = async (req, res) => {
   try {
     const cacheKey = 'stores:all';
@@ -146,7 +136,7 @@ const getStores = async (req, res) => {
 
     const stores = await Product.distinct('store');
     
-    // Cache por 1 hora
+
     await setCachedData(cacheKey, stores, 60);
 
     res.json(stores);
@@ -156,7 +146,6 @@ const getStores = async (req, res) => {
   }
 };
 
-// Obter todas as categorias disponíveis
 const getCategories = async (req, res) => {
   try {
     const cacheKey = 'categories:all';
@@ -168,7 +157,6 @@ const getCategories = async (req, res) => {
 
     const categories = await Product.distinct('category');
     
-    // Cache por 1 hora
     await setCachedData(cacheKey, categories, 60);
 
     res.json(categories);
@@ -178,7 +166,6 @@ const getCategories = async (req, res) => {
   }
 };
 
-// Obter estatísticas gerais
 const getStats = async (req, res) => {
   try {
     const cacheKey = 'stats:general';
@@ -200,7 +187,6 @@ const getStats = async (req, res) => {
       lastUpdate: lastUpdate ? lastUpdate.lastUpdated : null
     };
 
-    // Cache por 30 minutos
     await setCachedData(cacheKey, stats, 30);
 
     res.json(stats);
